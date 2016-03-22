@@ -1,0 +1,19 @@
+{
+  "name": "oy",
+  "version": "0.0.1",
+  "description": "TBD",
+  "bin": {
+    "oy": "./bin/oy.bin.js"
+  },
+  "author": "Pawel Badenski <pawel.badenski@gmail.com>",
+  "dependencies": {
+    "cheerio": "^0.20.0",
+    "colors": "^1.1.2",
+    "google": "^2.0.0",
+    "html-to-text": "^2.0.0",
+    "minimist": "^1.2.0",
+    "querystring": "^0.2.0",
+    "request": "^2.69.0",
+    "wordwrap": "^1.0.0"
+  }
+}
