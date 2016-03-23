@@ -9,12 +9,17 @@ cfg          = require('home-config').load('.oyrc')
 
 wrap = require('wordwrap')(120)
 
+engines = [
+  { long: "google", short: "g", query: "" },
+  { long: "stackoverflow", short: "so", query: "site:stackoverflow.com" }
+  { long: "wikipedia", short: "w", query: "site:wikipedia.org" }
+]
 printUsage = ->
   console.log 'Usage:'
   console.log '  oy <engine> "<query>"'
   console.log '  oy show <position>'
   console.log ''
-  console.log 'Engines: google (g), stackoverflow (so)'
+  console.log "Engines: #{engines.map((each) -> "#{each.long} (#{each.short})").join(", ")}"
 
 if argv._.length < 2
   printUsage()
@@ -47,11 +52,10 @@ if command == "show"
   google cfg.last_query, (error, response) ->
     positions.forEach (position) ->
       childProcess.exec("open -a 'Google Chrome' '#{response.links[position].link}'")
-else if command == "google" or command == "g"
-  query = argv._[1]
-  ask(query)
-else if command == "stackoverflow" or command == "so"
-  query = argv._[1]
-  ask("site:stackoverflow.com #{query}")
 else
-  printUsage()
+  query = argv._[1]
+  engine = engines.find (each) -> command in [each.long, each.short]
+  if engine?
+    ask("#{engine.query} #{query}".trim())
+  else
+    printUsage()
