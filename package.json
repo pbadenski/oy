@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "TBD",
   "bin": {
-    "oy": "./bin/oy.bin.js"
+    "oy": "./bin/oy"
   },
   "author": "Pawel Badenski <pawel.badenski@gmail.com>",
   "dependencies": {

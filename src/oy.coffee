@@ -7,6 +7,9 @@ colors  = require('colors')
 
 wrap = require('wordwrap')(120)
 query = argv._[0]
+if not query?
+  console.log 'Usage: oy "<query>"'
+  return
 google query, (error, response) ->
   return if error
   console.log "Results for '#{query}':"

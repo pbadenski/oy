@@ -1,6 +1,6 @@
 # Install
 
-coffee -o bin -c src/oy.bin.coffee
+coffee -o lib -c src/oy.coffee
 
 # Run
 

@@ -1,4 +1,4 @@
-bin/
+lib/
 node_modules/
 *.swp
 *.log
