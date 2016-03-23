@@ -9,6 +9,7 @@ cfg          = require('home-config').load('.oyrc')
 
 wrap = require('wordwrap')(120)
 
+NUMBER_OF_RESULTS=4
 engines = [
   { long: "google", short: "g", query: "" },
   { long: "stackoverflow", short: "so", query: "site:stackoverflow.com" }
@@ -25,21 +26,23 @@ if argv._.length < 2
   printUsage()
   return
 
+colorMatch = (text, match) ->
+  return "" if not text
+  query.split(" ").forEach (queryWord) ->
+    text = text.replace new RegExp("\\b#{queryWord}\\b", "gi"), (match) -> match.red
+  return text
+
 ask = (query) ->
   cfg.last_query = query
   cfg.save()
   google query, (error, response) ->
     return if error
     console.log "Results for '#{query}':"
-    response.links
+    response.links[0..NUMBER_OF_RESULTS-1]
       .filter (result) -> result.link?
       .forEach (result, idx) ->
-        console.log "#{idx + 1}. #{result.title}"
-        coloredDescription = result.description.replace(/\n|\r/g, "")
-        if coloredDescription
-          query.split(" ").forEach (queryWord) ->
-            coloredDescription = coloredDescription.replace new RegExp("\\b#{queryWord}\\b", "gi"), (match) -> match.red
-          console.log wrap(coloredDescription)
+        console.log "#{idx + 1}. #{colorMatch(result.title, query)}"
+        console.log wrap(colorMatch(result.description.replace(/\n|\r/g, ""), query))
         console.log ""
 
 command = argv._[0]
