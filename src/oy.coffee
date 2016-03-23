@@ -9,22 +9,18 @@ cfg          = require('home-config').load('.oyrc')
 
 wrap = require('wordwrap')(120)
 
-query = argv._[0]
-if not command? and not query?
+printUsage = ->
   console.log 'Usage:'
-  console.log '  oy "<query>"'
+  console.log '  oy <engine> "<query>"'
   console.log '  oy show <position>'
+  console.log ''
+  console.log 'Engines: google (g), stackoverflow (so)'
+
+if argv._.length < 2
+  printUsage()
   return
 
-if query == "show"
-  if not cfg.last_query
-    console.log 'First run: oy "<query>"'
-    return
-  positions = argv._[1].split(/,/).map(parseFloat).map((num) -> num - 1)
-  google cfg.last_query, (error, response) ->
-    positions.forEach (position) ->
-      childProcess.exec("open -a 'Google Chrome' '#{response.links[position].link}'")
-else
+ask = (query) ->
   cfg.last_query = query
   cfg.save()
   google query, (error, response) ->
@@ -40,3 +36,22 @@ else
             coloredDescription = coloredDescription.replace new RegExp("\\b#{queryWord}\\b", "gi"), (match) -> match.red
           console.log wrap(coloredDescription)
         console.log ""
+
+command = argv._[0]
+if command == "show"
+  if not cfg.last_query
+    console.log 'First run: oy <engine> "<query>"'
+    return
+  listOfPositions = String(argv._[1])
+  positions = listOfPositions.split(/,/).map(parseFloat).map((num) -> num - 1)
+  google cfg.last_query, (error, response) ->
+    positions.forEach (position) ->
+      childProcess.exec("open -a 'Google Chrome' '#{response.links[position].link}'")
+else if command == "google" or command == "g"
+  query = argv._[1]
+  ask(query)
+else if command == "stackoverflow" or command == "so"
+  query = argv._[1]
+  ask("site:stackoverflow.com #{query}")
+else
+  printUsage()
